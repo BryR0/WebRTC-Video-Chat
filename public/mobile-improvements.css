@@ -1,0 +1,384 @@
+/* ================================================================
+   MOBILE APP-LIKE EXPERIENCE RE-WRITE
+   ================================================================ */
+
+/* Only apply these radical structural changes on mobile devices */
+@media (max-width: 768px) {
+
+    /* === 1. APP CONTAINER LAYOUT === */
+    .app-container {
+        flex-direction: column;
+        height: 100vh;
+        height: 100dvh; /* Dynamic viewport height for mobile */
+        overflow: hidden;
+    }
+
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+        position: relative;
+    }
+
+    /* === 2. TOP HEADER (Simplified) === */
+    /* Only apply simplified header when joined, otherwise leave default for lobby */
+    body.joined-mode .app-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+        padding: 12px 16px !important;
+        border: none !important;
+        backdrop-filter: none !important;
+        pointer-events: none; /* Let touches pass through to video */
+    }
+
+    /* Re-enable pointer events for buttons inside header */
+    body.joined-mode .app-header button, 
+    body.joined-mode .app-header .header-status {
+        pointer-events: auto;
+    }
+
+    body.joined-mode .header-content {
+        width: 100%;
+        display: flex;
+        flex-direction: row !important;
+        justify-content: flex-end; /* Alinear todo a la derecha */
+        align-items: center;
+        gap: 8px;
+    }
+    
+    /* Controles del header (tema + estado) - Alineados horizontalmente a la derecha */
+    body.joined-mode .header-right {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Hide redundant elements in header for cleaner look */
+    body.joined-mode .app-header h1 {
+        display: none; 
+    }
+
+    body.joined-mode .header-status {
+        font-size: 11px !important;
+        padding: 4px 8px !important;
+        background: rgba(0,0,0,0.5) !important;
+        backdrop-filter: blur(4px);
+        color: white !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+    }
+
+    body.joined-mode #themeToggle {
+        width: 36px !important;
+        height: 36px !important;
+        background: rgba(0,0,0,0.5) !important;
+        border: none !important;
+        color: white !important;
+    }
+
+    /* === 3. MAIN VIDEO AREA === */
+    .videos-container {
+        flex: 1;
+        height: 100%;
+        padding: 0 !important;
+        background: #000; /* Black background for immersive video */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .videos-grid {
+        height: 100%;
+        gap: 0 !important;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Main video takes remaining space */
+    .main-video-wrapper {
+        flex: 1;
+        width: 100%;
+        height: auto;
+        border-radius: 0 !important; /* Full edge-to-edge */
+        position: relative;
+    }
+
+    .main-video-wrapper .video-wrapper {
+        border-radius: 0 !important;
+    }
+
+    /* Thumbnails as a floating strip - ONLY VISIBLE WHEN JOINED */
+    .thumbnail-videos {
+        position: absolute;
+        bottom: 80px; /* Above the control bar */
+        left: 0;
+        right: 0;
+        height: 110px !important;
+        padding: 10px 10px !important;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+        z-index: 20;
+        /* Ensure it's hidden by default via JS unless we add explicit hide here */
+        display: none; 
+    }
+    
+    /* Reveal thumbnails when joined-mode is active */
+    body.joined-mode .thumbnail-videos {
+        display: flex !important;
+    }
+
+    .video-wrapper.thumbnail {
+        height: 90px !important;
+        width: 120px !important;
+        min-width: 120px !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
+        background: #111;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5) !important;
+    }
+
+    /* === 4. BOTTOM CONTROLS BAR (The Big Change) === */
+    /* HIDE BY DEFAULT, ONLY SHOW WHEN JOINED */
+    .media-controls-bar {
+        display: none !important; 
+    }
+
+    body.joined-mode .media-controls-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        background: rgba(18, 18, 20, 0.95) !important; /* Almost solid background */
+        backdrop-filter: blur(20px) !important;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding: 12px 16px 24px 16px !important; /* Extra padding for bottom safe area */
+        display: flex !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+        flex-direction: row !important;
+        gap: 8px !important;
+    }
+
+    /* Hide elements we don't need in the simplified mobile toolbar */
+    .controls-left, 
+    .controls-center, 
+    .controls-right {
+        width: auto !important;
+        display: contents !important; /* Un-group divs to lay out buttons flat */
+    }
+
+    .room-name {
+        display: none !important; /* Info is better in header if needed, but hiding for now */
+    }
+
+    /* Uniform Control Buttons */
+    .control-btn {
+        width: 48px !important;
+        height: 48px !important;
+        border-radius: 50% !important; /* Circular buttons look more "call" like */
+        background: rgba(255,255,255,0.1) !important;
+        border: none !important;
+        color: white !important;
+        margin: 0 !important;
+        flex-shrink: 0;
+    }
+
+    /* Active states for toggle buttons (Mic/Cam) */
+    .control-btn.success {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .control-btn.danger {
+        background: rgba(255,255,255,0.1) !important;
+        color: white !important;
+        position: relative;
+    }
+    
+    /* Strike-through styling for disabled states if needed, 
+       but relying on color change (white vs transparent) is cleaner app-style */
+    
+    /* Hangup Button - Center and Prominent */
+    #leaveBtn {
+        width: 56px !important;
+        height: 56px !important;
+        background: #FF3B30 !important; /* Red */
+        color: white !important;
+        border-radius: 20px !important; /* Squircle */
+        order: 99; /* Force to end or organize specifically */
+    }
+
+    /* === 5. CHAT INTEGRATION === */
+    /* HIDE BY DEFAULT */
+    #floatingChatBtn {
+        display: none !important;
+    }
+
+    /* SHOW ONLY WHEN JOINED */
+    body.joined-mode #floatingChatBtn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        bottom: 110px !important; /* Move up above the thumbnail strip */
+        right: 16px !important;
+        width: 48px !important;
+        height: 48px !important;
+        z-index: 2005 !important; /* Asegurar que esté por encima de otros elementos */
+        pointer-events: auto !important; /* Habilitar clicks */
+        cursor: pointer !important;
+    }
+    
+    /* Centrar el SVG dentro del botón flotante */
+    body.joined-mode #floatingChatBtn svg {
+        display: block;
+        margin: auto;
+    }
+    
+    /* Botón de cerrar chat - Visible en mobile */
+    .close-chat-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 36px;
+        height: 36px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        color: var(--text-primary);
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 10;
+        transition: all 0.2s ease;
+    }
+    
+    .close-chat-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+    }
+    
+    .close-chat-btn:active {
+        transform: scale(0.95);
+    }
+    
+    /* Chat form input y botón de enviar - Responsive */
+    .chat-form {
+        padding: 12px !important;
+        gap: 8px !important;
+    }
+    
+    #chatInput {
+        flex: 1;
+        min-width: 0; /* Importante para flexbox */
+        padding: 10px 12px !important;
+        font-size: 14px !important;
+    }
+    
+    #sendBtn, .send-btn {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+        padding: 0 !important;
+        flex-shrink: 0; /* Evita que se encoja */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #sendBtn svg, .send-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Sidebar adjustments */
+    .sidebar {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100% !important;
+        z-index: 100 !important;
+        background: var(--bg-primary) !important;
+    }
+
+    .sidebar-header {
+        padding-top: 20px; /* Status bar spacing */
+    }
+
+    /* === 6. JOIN PANEL (LOBBY) === */
+    /* Make lobby full screen mobile friendly */
+    .join-panel {
+        padding: 0 !important;
+        height: 100%;
+        background: var(--bg-primary) !important;
+        overflow-y: auto;
+    }
+
+    .join-card {
+        box-shadow: none !important;
+        background: transparent !important;
+        padding: 20px !important;
+        margin: 0 !important;
+        border: none !important;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .green-room-content {
+        flex-direction: column !important;
+        gap: 24px !important;
+    }
+    
+    #previewContainer {
+        height: 300px !important;
+        max-height: 40vh !important;
+    }
+
+    .setup-controls {
+        padding-bottom: 40px;
+    }
+
+    /* Big Call-To-Action Join Button */
+    .join-btn {
+        width: 100%;
+        padding: 16px !important;
+        font-size: 18px !important;
+        position: sticky;
+        bottom: 20px;
+        box-shadow: 0 4px 20px rgba(88, 101, 242, 0.5) !important;
+    }
+}
+
+
+/* === CHAT MOBILE LOGIC === */
+@media (max-width: 768px) {
+    #chatSection {
+        display: none !important; /* Force hide by default on mobile unless active */
+        position: fixed;
+        top: 0;
+        right: 0; /* PEGADO al lado DERECHO */
+        width: 70% !important; /* Solo 70% del ancho para ver el video */
+        max-width: 320px; /* Máximo para pantallas grandes */
+        height: 100vh !important; /* Altura completa */
+        height: 100dvh !important;
+        z-index: 2010 !important; /* Por encima del backdrop (98) y otros elementos */
+        background: var(--bg-primary);
+        flex-direction: column;
+        transform: translateX(100%) !important; /* Oculto FUERA a la DERECHA por defecto */
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important; /* Transición suave */
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3); /* Sombra a la IZQUIERDA para profundidad */
+        border-left: 1px solid var(--border);
+    }
+
+    #chatSection.active {
+        display: flex !important;
+        transform: translateX(0) !important; /* ENTRA desde la DERECHA hacia la IZQUIERDA */
+    }
+}
