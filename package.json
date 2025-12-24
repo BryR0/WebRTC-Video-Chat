@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "connect-sqlite3": "^0.9.16",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "socket.io": "^4.8.1",
+    "sqlite3": "^5.1.7",
+    "ws": "^8.18.3"
+  }
+}
