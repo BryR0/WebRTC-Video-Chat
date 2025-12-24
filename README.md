@@ -1,8 +1,8 @@
 # 🎥 WebRTC Video Chat
 
-App de videollamadas P2P con WebRTC, Socket.IO y diseño mobile-first.
+Proyecto de videollamadas P2P con WebRTC, Socket.IO y diseño mobile-first.
 
-## � Quick Start
+## 🚀 Uso
 
 ### Option 1: Node.js (Recomendado)
 ```bash
@@ -20,19 +20,18 @@ Abre: `https://localhost:3030`
 
 ---
 
-## � Requisitos
+## 📦 Requisitos
 
 - **Node.js** 16+ o **Python** 3.8+
-- **Certificados SSL** (ver abajo)
+- **OpenSSL** (para generar certificados)
 
 ---
 
-## 🔐 Certificados SSL
+## 🔐 Generar Certificados SSL
 
-Genera certificados autofirmados:
+WebRTC requiere HTTPS. Genera certificados locales:
 
 ```bash
-mkdir -p ssl
 openssl req -x509 -newkey rsa:4096 \
   -keyout key.pem \
   -out cert.pem \
@@ -40,16 +39,13 @@ openssl req -x509 -newkey rsa:4096 \
   -subj "/C=US/ST=State/L=City/O=Org/CN=localhost"
 ```
 
-> Para producción usa [Let's Encrypt](https://letsencrypt.org/)
+> ⚠️ Al abrir la app, el navegador mostrará advertencia de seguridad. Click en "Avanzado" → "Continuar de todos modos".
 
 ---
 
 ## ⚙️ Servidor TURN/STUN (Opcional)
 
-### ¿Cuándo lo necesitas?
-
-- ✅ **SÍ**: Conexiones por Internet o NAT estricto
-- ❌ **NO**: Redes locales con múltiples VLANs
+Solo necesario para conexiones a través de Internet con NAT estricto.
 
 ### Instalación rápida (coturn):
 
@@ -81,7 +77,7 @@ sudo systemctl start coturn
 - 📹 Video/Audio P2P
 - 💬 Chat en tiempo real
 - 📱 UI mobile optimizada
-- � Auto-rejoin
+- 🔄 Auto-rejoin
 - 📤 Compartir archivos
 - 🌓 Dark/Light mode
 
@@ -96,21 +92,6 @@ webRTC/
 ├── server.py        # Servidor Python (equivalente)
 ├── key.pem          # Clave privada SSL
 └── cert.pem         # Certificado SSL
-```
-
----
-
-## � Producción
-
-### PM2 (Node.js)
-```bash
-pm2 start server.js --name webrtc
-```
-
-### Gunicorn (Python)
-```bash
-gunicorn --worker-class eventlet -w 1 --bind 0.0.0.0:3030 \
-  --certfile=cert.pem --keyfile=key.pem server:app
 ```
 
 ---
