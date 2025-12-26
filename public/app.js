@@ -14,6 +14,45 @@ let unreadCount = 0;
 let isMobileChatOpen = false;
 let mainVideoId = "local";
 
+// Basic Router/View System
+const VIEWS = {
+    LOBBY: 'lobby',
+    ROOM: 'room',
+    LOADING: 'loading'
+};
+
+function navigateTo(viewName) {
+    const lobby = document.getElementById("joinPanel");
+    const mediaControls = document.getElementById("mediaControls");
+    const videosContainer = document.getElementById("videosContainer");
+    const floatChat = document.getElementById("floatingChatBtn");
+    const loadingScreen = document.getElementById("loadingScreen");
+    
+    // Reset/Hide Default States
+    if(lobby) lobby.style.display = "none";
+    if(mediaControls) mediaControls.style.display = "none";
+    if(videosContainer) videosContainer.style.display = "none";
+    if(floatChat) floatChat.style.display = "none";
+    if(loadingScreen) loadingScreen.style.display = "none";
+    
+    if (viewName === VIEWS.LOBBY) {
+        if(lobby) lobby.style.display = "flex";
+        document.body.classList.remove("joined-mode");
+    } else if (viewName === VIEWS.ROOM) {
+        if(mediaControls) mediaControls.style.display = "flex";
+        if(videosContainer) videosContainer.style.display = "block";
+        document.body.classList.add("joined-mode");
+        
+        // Show floating chat only on mobile
+        if (window.innerWidth <= 768 && floatChat) {
+            floatChat.style.display = "flex";
+        }
+    } else if (viewName === VIEWS.LOADING) {
+        // Show elegant loading spinner
+        if(loadingScreen) loadingScreen.style.display = "flex";
+    }
+}
+
 async function ensureConfig() {
 	if (!config) config = await fetch("/webrtc-config").then((r) => r.json());
 }
@@ -114,7 +153,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 					console.log("✅ Username restored:", session.username);
 				}
 				
+                // EVITAR FLASH: Ocultar lobby inmediatamente
                 console.log("🔄 Auto-rejoining session in 500ms...");
+                navigateTo(VIEWS.LOADING);
 				// Small delay to ensure everything is initialized
 				setTimeout(() => {
                     console.log("▶️ Calling joinRoom() now...");
@@ -654,21 +695,16 @@ async function joinRoom() {
 		localWrapper.appendChild(overlay);
 		mainVideoWrapper.appendChild(localWrapper);
 
-		document.getElementById("joinPanel").style.display = "none";
-		document.getElementById("mediaControls").style.display = "flex";
-		document.getElementById("videosContainer").style.display = "block";
-		
-		// En mobile, el chat se maneja con clases (active), no con inline styles
-		// para evitar conflictos con display: none !important del CSS
+		overlay.appendChild(label);
+		localWrapper.appendChild(localVideo);
+		localWrapper.appendChild(overlay);
+		mainVideoWrapper.appendChild(localWrapper);
+
+        // Switch View using Router
+        navigateTo(VIEWS.ROOM);
+
 		if (window.innerWidth > 768) {
 			document.getElementById("chatSection").style.display = "flex";
-		}
-		
-		// Add joined-mode class for mobile CSS styling
-		document.body.classList.add("joined-mode");
-
-		if (window.innerWidth <= 768) {
-			document.getElementById("floatingChatBtn").style.display = "flex";
 		}
 
 		document.getElementById("headerStatus").textContent = "Connected";

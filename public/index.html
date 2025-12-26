@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="UTF-8" />
@@ -98,6 +98,19 @@
 						</div>
 					</div>
 				</header>
+
+				<!-- Loading Screen -->
+				<div class="loading-screen" id="loadingScreen" style="display: none;">
+					<div class="loading-content">
+						<div class="spinner">
+							<div class="spinner-ring"></div>
+							<div class="spinner-ring"></div>
+							<div class="spinner-ring"></div>
+						</div>
+						<h2 class="loading-text">Reconectando...</h2>
+						<p class="loading-subtext">Restaurando tu sesi�n</p>
+					</div>
+				</div>
 
 				<!-- Green Room / Pre-join Screen -->
 				<div class="join-panel" id="joinPanel">
@@ -281,13 +294,13 @@
 
 						<!-- Thumbnails -->
 						<div class="thumbnail-videos" id="thumbnailVideos">
-							<!-- Los thumbnails se agregan aquÃ­ dinÃ¡micamente -->
+							<!-- Los thumbnails se agregan aquí dinámicamente -->
 						</div>
 					</div>
 				</div>
 			</main>
 
-			<!-- BotÃ³n flotante para abrir chat en mobile -->
+			<!-- Botón flotante para abrir chat en mobile -->
 			<button
 				class="floating-chat-btn"
 				id="floatingChatBtn"
@@ -302,13 +315,13 @@
 				<div class="unread-badge" id="unreadBadge" style="display: none">0</div>
 			</button>
 
-			<!-- Modal para ver imÃ¡genes -->
+			<!-- Modal para ver imágenes -->
 			<div class="image-modal" id="imageModal" onclick="closeImageModal(event)">
 				<button
 					class="image-modal-close"
 					onclick="event.stopPropagation(); closeImageModal(event)"
 				>
-					âœ•
+					✕
 				</button>
 				<img id="modalImage" src="" alt="" onclick="event.stopPropagation()" />
 			</div>
